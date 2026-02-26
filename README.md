@@ -19,3 +19,8 @@ Example: did:pqie:5135e697:8b7ecf94:a3f21bc0
 ## License
 
 W3C Software and Document License
+
+## Contact
+
+**Maintainer:** dixadholakiya@gmail.com  
+**Website:** https://pqie.network
