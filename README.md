@@ -23,4 +23,3 @@ W3C Software and Document License
 ## Contact
 
 **Maintainer:** dixadholakiya@gmail.com  
-**Website:** https://pqie.network
