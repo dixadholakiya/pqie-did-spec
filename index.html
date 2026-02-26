@@ -210,6 +210,7 @@
         </div>
         <div class="meta" style="margin-top:.4rem">
             <span><strong>Website:</strong> <a href="https://pqie.network">https://pqie.network</a></span>
+            <span><strong>Support:</strong> <a href="mailto:support@pqie.network">support@pqie.network</a></span>
             <span><strong>Registry:</strong> <a href="https://github.com/w3c/did-extensions/pull/667">W3C PR
                     #667</a></span>
         </div>
@@ -318,35 +319,74 @@
     </section>
 
     <section id="crud">
-        <h2>7. CRUD Operations</h2>
-        <h3>7.1 Read (Resolve)</h3>
+        <h2>6. CRUD Operations</h2>
+        <p>This section defines the operations for managing <code>did:pqie</code> Decentralized Identifiers. All
+            operations MUST be performed through a compliant PQIE-Client to ensure cryptographic integrity.</p>
+
+        <h3 id="create">6.1 Create (Register)</h3>
         <ol>
-            <li><strong>Fetch:</strong> Get ciphertext from IPFS via ledger CID.</li>
-            <li><strong>Decapsulate:</strong> Recover $SS$ using subject public key.</li>
-            <li><strong>Decrypt:</strong> Reveal JSON-LD Document.</li>
-            <li><strong>Verify:</strong> Check lattice signature $sig$ against $doc$.</li>
+            <li><strong>Attribute Preparation</strong>: Attributes MUST be transformed into a polynomial using the PQIE
+                lifting process.</li>
+            <li><strong>Key Generation</strong>: A Ring-LWE key pair $(pk, sk)$ MUST be generated using Kyber-1024
+                parameters.</li>
+            <li><strong>Identifier Derivation</strong>: Generated via $H(A(x) \circ pk_{ntt})$.</li>
+            <li><strong>Digital Envelope</strong>: The document MUST be encrypted with AES-256-GCM.</li>
+            <li><strong>Ledger Submission</strong>: Anchor <code>id</code>, <code>public_key</code>, and
+                <code>ipfs_cid</code> to the ledger.
+            </li>
         </ol>
+
+        <h3 id="read">6.2 Read (Resolve)</h3>
+        <p>A <code>did:pqie</code> DID resolution returns the decrypted DID Document.</p>
+        <ol>
+            <li><strong>Fetch</strong>: Retrieve encrypted package from IPFS via ledger CID.</li>
+            <li><strong>Decapsulate</strong>: Recover shared secret $SS$.</li>
+            <li><strong>Decrypt &amp; Verify</strong>: Reveal document and verify lattice signature.</li>
+        </ol>
+        <table>
+            <tr>
+                <th>Error Code</th>
+                <th>Meaning</th>
+            </tr>
+            <tr>
+                <td><code>notFound</code></td>
+                <td>DID not on ledger.</td>
+            </tr>
+            <tr>
+                <td><code>securityError</code></td>
+                <td>Decryption or signature failure.</td>
+            </tr>
+        </table>
+
+        <h3 id="update">6.3 Update</h3>
+        <p>Updates MUST be authorized by the controller's private key. <code>versionId</code> MUST be incremented, and
+            changes re-anchored to the ledger via a new IPFS CID.</p>
+
+        <h3 id="deactivate">6.4 Deactivate</h3>
+        <p>Terminal operation requiring a signed mandate. Marks the DID as <code>deactivated: true</code> permanently.
+        </p>
     </section>
 
     <section id="security">
-        <h2>8. Security Considerations</h2>
-        <table>
-            <tr>
-                <th>Scheme</th>
-                <th>n</th>
-                <th>Quantum Bit-Security</th>
-            </tr>
-            <tr>
-                <td><strong>PQIE-Enc</strong></td>
-                <td>512</td>
-                <td>256</td>
-            </tr>
-        </table>
+        <h2>7. Security Considerations</h2>
+        <h3>7.1 Post-Quantum Hardness</h3>
+        <p>Derives security from Ring-LWE problems, providing 256-bit quantum bit-security. Side-channel protections
+            like constant-time NTT and tanh activation are required.</p>
+        <h3>7.2 Key Management</h3>
+        <p>Controllers SHOULD use HSM/TEE for private key storage. Network protocols MUST accommodate larger lattice
+            public keys (~1.2KB).</p>
+        <h3>7.3 Replay and Integrity</h3>
+        <p>Nonces and <code>versionId</code> prevent replay. IPFS CIDs ensure bit-level integrity of encrypted
+            documents. Follows RFC3552 guidelines.</p>
     </section>
 
     <section id="privacy">
-        <h2>9. Privacy Considerations</h2>
-        <p>Minimal PII, Gaussian masking, and selective disclosure support.</p>
+        <h2>8. Privacy Considerations</h2>
+        <h3>8.1 Minimal Disclosure</h3>
+        <p>Raw PII is NEVER stored. Attributes are blurred using Gaussian noise ($\sigma=4.0$).</p>
+        <h3>8.2 Surveillance Mitigation</h3>
+        <p>Resolvers MUST NOT report resolution activity. Encrypted-by-Default documents prevent passive observation by
+            service providers or ISPs. Follows GDPR Article 17 for erasure.</p>
     </section>
 
     <section id="context">
