@@ -205,12 +205,11 @@
         <h1>DID Method Specification: <code>did:pqie</code></h1>
         <div class="meta">
             <span><strong>Version:</strong> 1.0.0</span>
-            <span><strong>Published:</strong> 2026-02-25</span>
+            <span><strong>Published:</strong> 2026-02-26</span>
             <span><strong>Authors:</strong> PQIE Research Group</span>
         </div>
         <div class="meta" style="margin-top:.4rem">
-            <span><strong>Context:</strong> <a
-                    href="https://pqie.network/ns/did/v1">https://pqie.network/ns/did/v1</a></span>
+            <span><strong>Website:</strong> <a href="https://pqie.network">https://pqie.network</a></span>
             <span><strong>Registry:</strong> <a href="https://github.com/w3c/did-extensions/pull/667">W3C PR
                     #667</a></span>
         </div>
@@ -222,15 +221,8 @@
             This document defines the <code>did:pqie</code> DID method — a
             <strong>Post-Quantum Identity Encryption</strong> Decentralized Identifier method.
             It provides quantum-safe digital identity management using
-            <strong>Ring-LWE lattice cryptography</strong> (Kyber-1024 compatible),
-            dual-hash identifier generation (SHA-3-512 + Blake2b), and cross-blockchain
-            ledger support. It is designed for national-scale identity systems (e.g.,
-            Aadhaar KYC) requiring cryptographic agility against quantum adversaries.
-        </p>
-        <p>
-            Conformance with the
-            <a href="https://www.w3.org/TR/did-core/">W3C DID Core Specification</a>
-            is the normative baseline for this document.
+            <strong>Ring-LWE lattice cryptography</strong>, dual-hash identifier generation, and cross-blockchain
+            ledger support. It ensures that no part of the DID Document ever travels or rests in plaintext.
         </p>
     </section>
 
@@ -239,16 +231,11 @@
         <ol>
             <li><a href="#introduction">Introduction</a></li>
             <li><a href="#terminology">Terminology</a></li>
+            <li><a href="#architecture">PQIE Architecture Overview</a></li>
             <li><a href="#method-name">DID Method Name</a></li>
             <li><a href="#identifier">Method-Specific Identifier</a></li>
-            <li><a href="#crud">CRUD Operations</a>
-                <ol>
-                    <li><a href="#create">Create</a></li>
-                    <li><a href="#read">Read (Resolve)</a></li>
-                    <li><a href="#update">Update</a></li>
-                    <li><a href="#deactivate">Deactivate</a></li>
-                </ol>
-            </li>
+            <li><a href="#crypto">Cryptographic Elements</a></li>
+            <li><a href="#crud">CRUD Operations</a></li>
             <li><a href="#security">Security Considerations</a></li>
             <li><a href="#privacy">Privacy Considerations</a></li>
             <li><a href="#context">JSON-LD Context</a></li>
@@ -260,21 +247,15 @@
     <section id="introduction">
         <h2>1. Introduction</h2>
         <p>
-            The <code>did:pqie</code> method addresses the growing need for
-            <strong>post-quantum-safe</strong> digital identity infrastructure. As quantum
-            computers advance toward breaking RSA and ECDSA, identity systems must migrate
-            to lattice-based alternatives. <code>did:pqie</code> provides:
+            The <code>did:pqie</code> method addresses the need for <strong>post-quantum-safe</strong> digital identity.
+            It provides:
         </p>
         <ul>
-            <li><strong>Quantum resistance:</strong> Ring-LWE hardness assumption (equivalent to shortest vector problem
-                on ideal lattices)</li>
-            <li><strong>Collision resistance:</strong> Dual SHA-3-512 / Blake2b hash identifier generation</li>
-            <li><strong>Cross-chain support:</strong> Single DID resolvable across Hyperledger Indy, Ethereum, and
-                Fabric</li>
-            <li><strong>IPFS-backed DID Documents:</strong> Content-addressed, immutable storage</li>
-            <li><strong>W3C VC Data Model 2.0:</strong> Native Verifiable Credentials integration</li>
-            <li><strong>Aadhaar KYC compatibility:</strong> Designed for India's national identity infrastructure</li>
-        </ul>
+            <li><strong>Quantum resistance:</strong> Based on Ring-LWE hardness.</li>
+            <li><strong>Digital Envelope:</strong> Encrypted-by-default DID Documents.</li>
+            <li><strong>Homomorphic Noise Filtering:</strong> Efficient payload management.</li>
+            <li><strong>Cross-chain support:</strong> Resolvable across Hyperledger Indy, Ethereum, and Fabric.</li>
+            </ol>
     </section>
 
     <section id="terminology">
@@ -286,299 +267,121 @@
             </tr>
             <tr>
                 <td><strong>PQIE</strong></td>
-                <td>Post-Quantum Identity Encryption — the Ring-LWE based cryptographic framework</td>
+                <td>Post-Quantum Identity Encryption — the Ring-LWE based framework</td>
             </tr>
             <tr>
                 <td><strong>Ring-LWE</strong></td>
-                <td>Ring Learning With Errors — a lattice-based cryptographic hard problem</td>
+                <td>Ring Learning With Errors — a lattice-based hard problem</td>
             </tr>
             <tr>
-                <td><strong>NTT</strong></td>
-                <td>Number Theoretic Transform — O(n log n) polynomial multiplication</td>
-            </tr>
-            <tr>
-                <td><strong>DID Document</strong></td>
-                <td>A JSON-LD document containing verification methods and service endpoints</td>
-            </tr>
-            <tr>
-                <td><strong>Lattice signature</strong></td>
-                <td>A digital signature based on lattice hardness problems, quantum-resistant</td>
-            </tr>
-            <tr>
-                <td><strong>IPFS</strong></td>
-                <td>InterPlanetary File System — content-addressed distributed storage</td>
+                <td><strong>Digital Envelope</strong></td>
+                <td>KEM + Symmetric encryption for document protection</td>
             </tr>
         </table>
+    </section>
+
+    <section id="architecture">
+        <h2>3. PQIE Architecture Overview</h2>
+        <ol>
+            <li><strong>Ring-LWE Engine:</strong> Polynomial arithmetic and NTT transforms.</li>
+            <li><strong>PQIE Encryption Layer:</strong> "Digital Envelope" system (KEM + AES-GCM).</li>
+            <li><strong>Homomorphic Noise-Filtering:</strong> $c' = c \pmod{q/4}$ logic.</li>
+            <li><strong>Ledger-Agnostic Interface:</strong> Adaptable to any key-value ledger.</li>
+        </ol>
     </section>
 
     <section id="method-name">
-        <h2>3. DID Method Name</h2>
+        <h2>4. DID Method Name</h2>
         <p>The method name is: <strong><code>pqie</code></strong></p>
-        <p>All DIDs using this method MUST begin with: <code>did:pqie:</code></p>
+        <p>Prefix: <code>did:pqie:</code></p>
     </section>
 
     <section id="identifier">
-        <h2>4. Method-Specific Identifier</h2>
-        <h3>4.1 Syntax</h3>
-        <pre><code>did-pqie       = "did:pqie:" primary-hash ":" secondary-hash ":" entropy-suffix
-primary-hash   = 8HEXDIG         ; 8-char SHA-3-512 prefix
-secondary-hash = 8HEXDIG         ; 8-char Blake2b-128 prefix
-entropy-suffix = 8HEXDIG         ; 8-char cryptographic random nonce
-
-Example: did:pqie:5135e697:8b7ecf94:a3f21bc0</code></pre>
-
-        <h3>4.2 Cryptographic Parameters (Kyber-1024 compatible)</h3>
-        <table>
-            <tr>
-                <th>Parameter</th>
-                <th>Value</th>
-                <th>Description</th>
-            </tr>
-            <tr>
-                <td><code>n</code></td>
-                <td>512</td>
-                <td>Polynomial degree</td>
-            </tr>
-            <tr>
-                <td><code>q</code></td>
-                <td>24593</td>
-                <td>Modulus (NTT-friendly prime)</td>
-            </tr>
-            <tr>
-                <td><code>σ</code></td>
-                <td>4.0</td>
-                <td>Gaussian noise standard deviation</td>
-            </tr>
-            <tr>
-                <td><code>root</code></td>
-                <td>5</td>
-                <td>NTT primitive root</td>
-            </tr>
-            <tr>
-                <td>Security</td>
-                <td>128-bit PQ</td>
-                <td>Post-quantum security level</td>
-            </tr>
-        </table>
-
-        <h3>4.3 Generation Algorithm</h3>
+        <h2>5. Method-Specific Identifier</h2>
+        <h3>5.1 Syntax</h3>
+        <pre><code>did:pqie:{primary-hash}:{secondary-hash}:{entropy-suffix}</code></pre>
+        <h3>5.2 Generation Algorithm</h3>
         <ol>
-            <li>Lift citizen attributes to Ring-LWE polynomial domain with Gaussian noise (σ=4.0)</li>
-            <li>Generate Ring-LWE key pair <code>(pk, sk)</code></li>
-            <li>Compute <code>combined_ntt = user_ntt * pk_ntt (mod q)</code>, apply inverse NTT</li>
-            <li>Apply pointwise tanh activation for side-channel resistance</li>
-            <li><code>primary_hash = SHA3-512(poly_bytes)[:8]</code></li>
-            <li><code>secondary_hash = Blake2b-128(poly_bytes)[:8]</code></li>
-            <li><code>entropy_suffix = cryptographic_random(4 bytes)</code></li>
-            <li>Return <code>did:pqie:{primary_hash}:{secondary_hash}:{entropy_suffix}</code></li>
+            <li><strong>Attribute Lifting:</strong> Attributes mapped to polynomial domain with Gaussian noise.</li>
+            <li><strong>Ring-LWE Binding:</strong> $R_{ntt} = A_{ntt} \circ pk_{ntt} \pmod q$.</li>
+            <li><strong>Non-linear Activation:</strong> <code>tanh</code> activation for side-channel resistance.</li>
+            <li><strong>Dual-Hash:</strong> SHA3-512 and Blake2b-128 prefixes.</li>
         </ol>
     </section>
 
+    <section id="crypto">
+        <h2>6. Cryptographic Elements</h2>
+        <h3>6.1 PQIE Digital Envelope</h3>
+        <p>Shared Secret $SS = KEM(pk)$. Ciphertext $CT = AES-GCM(SS, Doc)$.</p>
+        <h3>6.2 Lattice Signature</h3>
+        <p>Challenge-response: $z = y + c \cdot s$. Verification: $A \cdot z - c \cdot pk \approx$ commitment.</p>
+    </section>
+
     <section id="crud">
-        <h2>5. CRUD Operations</h2>
-
-        <h3 id="create">5.1 Create</h3>
+        <h2>7. CRUD Operations</h2>
+        <h3>7.1 Read (Resolve)</h3>
         <ol>
-            <li>Generate identifier using algorithm in §4.3</li>
-            <li>Generate Ring-LWE key pair <code>(pk, sk)</code></li>
-            <li>Build W3C-conformant DID Document (see §9)</li>
-            <li>Upload DID Document to IPFS → obtain CID</li>
-            <li>Submit NYM transaction to Hyperledger Indy ledger with DID, verkey, and IPFS CID</li>
-            <li>Register in DID Registry with metadata (<code>created_at</code>, <code>versionId: "1"</code>)</li>
-        </ol>
-
-        <h3 id="read">5.2 Read (Resolve)</h3>
-        <p>A <code>did:pqie</code> DID MUST be resolvable through the following lookup chain (in priority order):</p>
-        <ol>
-            <li>DID Registry (primary store)</li>
-            <li>DID Documents store (VC-enriched documents)</li>
-            <li>Citizen registration store (fallback)</li>
-        </ol>
-        <p>Resolution returns a W3C DID Resolution Result:</p>
-        <pre><code>{
-  "@context": "https://w3id.org/did-resolution/v1",
-  "didDocument": { ... },
-  "didResolutionMetadata": { "contentType": "application/did+ld+json" },
-  "didDocumentMetadata": { "created": "...", "versionId": "1", "deactivated": false }
-}</code></pre>
-        <p>Resolution endpoints:</p>
-        <pre><code>GET  /api/did/resolve/{did}         → W3C resolution envelope
-POST /api/did/resolve               → { "did": "did:pqie:..." } body
-GET  /1.0/identifiers/{did}         → Universal Resolver compatible</code></pre>
-        <div class="note">
-            <strong>Note:</strong> Deactivated DIDs MUST return the last known document with
-            <code>didDocumentMetadata.deactivated: true</code>. A <code>notFound</code> error
-            MUST NOT be returned for deactivated DIDs.
-        </div>
-
-        <h3 id="update">5.3 Update</h3>
-        <p><strong>Authorization:</strong> Only the DID subject (authenticated citizen) or a government authority may
-            update.</p>
-        <table>
-            <tr>
-                <th>Field</th>
-                <th>Effect</th>
-            </tr>
-            <tr>
-                <td><code>service</code></td>
-                <td>Add/replace service endpoints by <code>id</code></td>
-            </tr>
-            <tr>
-                <td><code>remove_service_ids</code></td>
-                <td>Remove listed service IDs</td>
-            </tr>
-            <tr>
-                <td><code>verificationMethod</code></td>
-                <td>Rotate/add verification keys</td>
-            </tr>
-            <tr>
-                <td><code>verifiableCredentials</code></td>
-                <td>Embed VC objects (e.g., KYC approval)</td>
-            </tr>
-            <tr>
-                <td><code>custom_fields</code></td>
-                <td>Merge arbitrary top-level DID document fields</td>
-            </tr>
-        </table>
-        <p>On update: increments <code>versionId</code>, writes <code>DID_UPDATE</code> transaction to ledger,
-            re-uploads to IPFS.</p>
-
-        <h3 id="deactivate">5.4 Deactivate</h3>
-        <p><strong>Authorization:</strong> Government authority only.</p>
-        <ol>
-            <li>Submit <code>DID_DEACTIVATE</code> transaction to ledger</li>
-            <li>Update DID status to <code>REVOKED</code> in registry</li>
-            <li>Set <code>deactivated: true</code> in DID Document</li>
-            <li>All associated Verifiable Credentials are also revoked</li>
+            <li><strong>Fetch:</strong> Get ciphertext from IPFS via ledger CID.</li>
+            <li><strong>Decapsulate:</strong> Recover $SS$ using subject public key.</li>
+            <li><strong>Decrypt:</strong> Reveal JSON-LD Document.</li>
+            <li><strong>Verify:</strong> Check lattice signature $sig$ against $doc$.</li>
         </ol>
     </section>
 
     <section id="security">
-        <h2>6. Security Considerations</h2>
-
-        <h3>6.1 Post-Quantum Security</h3>
-        <p>
-            The <code>did:pqie</code> method derives its security from the
-            <strong>Ring Learning With Errors (Ring-LWE)</strong> problem.
-            Security level: <strong>128-bit post-quantum</strong> (equivalent to 256-bit classical).
-            Algorithm family: Module-Kyber (NIST PQC Round 4 finalist basis).
-        </p>
-
-        <h3>6.2 Identifier Uniqueness</h3>
-        <p>
-            Dual hashing (SHA-3-512 + Blake2b-128) with a random entropy suffix ensures:
-            Birthday bound ≥ 2<sup>256</sup> operations against collision,
-            plus 2<sup>32</sup> additional entropy factor per identifier.
-        </p>
-
-        <h3>6.3 Threat Model</h3>
+        <h2>8. Security Considerations</h2>
         <table>
             <tr>
-                <th>Threat</th>
-                <th>Mitigation</th>
+                <th>Scheme</th>
+                <th>n</th>
+                <th>Quantum Bit-Security</th>
             </tr>
             <tr>
-                <td>Quantum computer breaks ECDSA</td>
-                <td>Ring-LWE keys are quantum-resistant</td>
-            </tr>
-            <tr>
-                <td>Replay attack</td>
-                <td>Anti-replay nonce in identity tokens</td>
-            </tr>
-            <tr>
-                <td>DID Document tampering</td>
-                <td>IPFS CID integrity verification</td>
-            </tr>
-            <tr>
-                <td>Unauthorized update</td>
-                <td>Session authentication + authority check</td>
-            </tr>
-            <tr>
-                <td>Rate abuse</td>
-                <td>5 tokens/hour/user rate limiting</td>
+                <td><strong>PQIE-Enc</strong></td>
+                <td>512</td>
+                <td>256</td>
             </tr>
         </table>
     </section>
 
     <section id="privacy">
-        <h2>7. Privacy Considerations</h2>
-        <ul>
-            <li><strong>Minimal PII:</strong> DID Documents MUST NOT contain raw Aadhaar numbers or biometric data</li>
-            <li><strong>Gaussian masking:</strong> Attributes are lifted to polynomial domain with σ=4.0 noise —
-                computationally indistinguishable from source data</li>
-            <li><strong>Selective disclosure:</strong> W3C VC selective disclosure supported natively</li>
-            <li><strong>Right to erasure:</strong> Deactivation marks DID inactive; compliant verifiers MUST reject
-                deactivated DIDs</li>
-        </ul>
+        <h2>9. Privacy Considerations</h2>
+        <p>Minimal PII, Gaussian masking, and selective disclosure support.</p>
     </section>
 
     <section id="context">
-        <h2>8. JSON-LD Context</h2>
-        <p>Context URL: <a
-                href="https://dixadholakiya.github.io/pqie-did-spec/context.jsonld">https://dixadholakiya.github.io/pqie-did-spec/context.jsonld</a>
-        </p>
+        <h2>10. JSON-LD Context</h2>
         <pre><code>{
   "@context": {
-    "@version": 1.1,
-    "@protected": true,
-    "pqie": "https://dixadholakiya.github.io/pqie-did-spec/#",
-    "PQIE-LatticeSignature2024": { "@id": "pqie:LatticeSignature2024", "@type": "@id" },
-    "PQIE-RingLWE2024":          { "@id": "pqie:RingLWE2024",          "@type": "@id" },
-    "RingLWESignature2024":      { "@id": "pqie:RingLWESignature2024",  "@type": "@id" },
-    "AadhaarKYCCredential":      { "@id": "pqie:AadhaarKYCCredential",  "@type": "@id" },
-    "publicKeyLattice":          { "@id": "pqie:publicKeyLattice",      "@type": "xsd:string" },
-    "latticeParams":             { "@id": "pqie:latticeParams",         "@type": "@json" }
+    "pqie": "https://pqie.network/ns/did/v1#",
+    "publicKeyLattice": "pqie:publicKeyLattice",
+    "latticeParams": "pqie:latticeParams"
   }
 }</code></pre>
     </section>
 
     <section id="example">
-        <h2>9. Example DID Document</h2>
+        <h2>11. Example DID Document</h2>
         <pre><code>{
   "@context": [
     "https://www.w3.org/ns/did/v1",
-    "https://dixadholakiya.github.io/pqie-did-spec/context.jsonld"
+    "https://pqie.network/ns/did/v1"
   ],
   "id": "did:pqie:5135e697:8b7ecf94:a3f21bc0",
   "verificationMethod": [{
-    "id": "did:pqie:5135e697:8b7ecf94:a3f21bc0#key-1",
+    "id": "...#key-1",
     "type": "PQIE-RingLWE2024",
-    "controller": "did:pqie:5135e697:8b7ecf94:a3f21bc0",
-    "publicKeyLattice": "AAAA...base64encodedpolynomialkey...",
-    "latticeParams": { "n": 512, "q": 24593, "algorithm": "Ring-LWE-Kyber1024" }
+    "publicKeyLattice": "AAAA...",
+    "latticeParams": { "n": 512, "q": 24593 }
   }],
-  "authentication": ["did:pqie:5135e697:8b7ecf94:a3f21bc0#key-1"],
-  "assertionMethod": ["did:pqie:5135e697:8b7ecf94:a3f21bc0#key-1"],
-  "service": [{
-    "id": "did:pqie:5135e697:8b7ecf94:a3f21bc0#aadhaar-kyc",
-    "type": "AadhaarKYCService",
-    "serviceEndpoint": "https://aadhaar-kyc.gov.in/verify"
-  }],
-  "created": "2026-02-25T00:10:00Z",
-  "updated": "2026-02-25T00:15:00Z"
+  "authentication": ["...#key-1"]
 }</code></pre>
-    </section>
-
-    <section id="references">
-        <h2>10. References</h2>
-        <ul>
-            <li><a href="https://www.w3.org/TR/did-core/">W3C DID Core Specification</a> — normative</li>
-            <li><a href="https://github.com/w3c/did-extensions">W3C DID Method Registry (did-extensions)</a></li>
-            <li><a href="https://www.w3.org/TR/vc-data-model-2.0/">W3C Verifiable Credentials Data Model 2.0</a></li>
-            <li><a href="https://csrc.nist.gov/projects/post-quantum-cryptography">NIST Post-Quantum Cryptography
-                    Standards</a></li>
-            <li><a href="https://pq-crystals.org/kyber/">CRYSTALS-Kyber (Module-Kyber)</a></li>
-            <li><a href="https://w3c-ccg.github.io/did-resolution/">DID Resolution Specification</a></li>
-            <li><a href="https://github.com/decentralized-identity/universal-resolver">Universal Resolver</a></li>
-            <li><a href="https://hyperledger-indy.readthedocs.io/">Hyperledger Indy</a></li>
-        </ul>
     </section>
 
     <footer>
         <strong>did:pqie DID Method Specification v1.0</strong><br />
         PQIE Research Group &mdash; Licensed under
-        <a href="https://www.w3.org/Consortium/Legal/copyright-software">W3C Software and Document License</a><br />
-        <a href="https://github.com/w3c/did-extensions/pull/667">W3C Registry PR #667</a>
+        <a href="https://www.w3.org/Consortium/Legal/copyright-software">W3C Software and Document License</a>
     </footer>
 
 </body>
