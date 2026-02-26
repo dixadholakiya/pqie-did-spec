@@ -330,19 +330,24 @@
             <li><strong>Key Generation</strong>: A Ring-LWE key pair $(pk, sk)$ MUST be generated using Kyber-1024
                 parameters.</li>
             <li><strong>Identifier Derivation</strong>: Generated via $H(A(x) \circ pk_{ntt})$.</li>
-            <li><strong>Digital Envelope</strong>: The document MUST be encrypted with AES-256-GCM.</li>
-            <li><strong>Ledger Submission</strong>: Anchor <code>id</code>, <code>public_key</code>, and
-                <code>ipfs_cid</code> to the ledger.
-            </li>
+            <li><strong>DID Document</strong>: Construct W3C-conformant DID Document.</li>
+            <li><strong>Digital Envelope</strong>: The document MUST be encrypted with AES-256-GCM and uploaded to
+                <strong>IPFS</strong>.</li>
+            <li><strong>Ledger Submission</strong>: Submit a <strong>NYM transaction</strong> to Hyperledger Indy
+                anchoring the <code>id</code>, <code>public_key</code>, and <code>ipfs_cid</code>.</li>
         </ol>
 
         <h3 id="read">6.2 Read (Resolve)</h3>
-        <p>A <code>did:pqie</code> DID resolution returns the decrypted DID Document.</p>
+        <p>A <code>did:pqie</code> resolution returns a W3C DID Resolution Result (<code>didDocument</code>,
+            <code>didResolutionMetadata</code>, <code>didDocumentMetadata</code>).</p>
         <ol>
+            <li><strong>Resolution Chain</strong>: DID Registry &rarr; DID Documents store &rarr; Registration fallback
+                (Ledger).</li>
             <li><strong>Fetch</strong>: Retrieve encrypted package from IPFS via ledger CID.</li>
             <li><strong>Decapsulate</strong>: Recover shared secret $SS$.</li>
             <li><strong>Decrypt &amp; Verify</strong>: Reveal document and verify lattice signature.</li>
         </ol>
+        <p><strong>Universal Resolver API</strong>: <code>GET /1.0/identifiers/{did}</code></p>
         <table>
             <tr>
                 <th>Error Code</th>
@@ -359,25 +364,29 @@
         </table>
 
         <h3 id="update">6.3 Update</h3>
-        <p>Updates MUST be authorized by the controller's private key. <code>versionId</code> MUST be incremented, and
-            changes re-anchored to the ledger via a new IPFS CID.</p>
+        <p>An <strong>authenticated partial update</strong> MUST be authorized by the controller's private key. The
+            process increments <code>versionId</code>, writes a <strong>DID_UPDATE</strong> transaction to the ledger,
+            and re-uploads the envelope to IPFS.</p>
 
         <h3 id="deactivate">6.4 Deactivate</h3>
-        <p>Terminal operation requiring a signed mandate. Marks the DID as <code>deactivated: true</code> permanently.
+        <p>A terminal operation authorized by <strong>Government authority</strong>. Sets <code>deactivated: true</code>
+            and revokes all associated Verifiable Credentials.
         </p>
     </section>
 
     <section id="security">
         <h2>7. Security Considerations</h2>
         <h3>7.1 Post-Quantum Hardness</h3>
-        <p>Derives security from Ring-LWE problems, providing 256-bit quantum bit-security. Side-channel protections
-            like constant-time NTT and tanh activation are required.</p>
+        <p>Security via Ring-LWE (128-bit PQ equivalent). Side-channel resistance via constant-time NTT and
+            <strong>pointwise tanh activation</strong> is required.</p>
         <h3>7.2 Key Management</h3>
-        <p>Controllers SHOULD use HSM/TEE for private key storage. Network protocols MUST accommodate larger lattice
-            public keys (~1.2KB).</p>
+        <p>Controllers SHOULD use HSM/TEE for private key storage. Lattice public keys (~1.2KB) must be supported by the
+            network.</p>
         <h3>7.3 Replay and Integrity</h3>
-        <p>Nonces and <code>versionId</code> prevent replay. IPFS CIDs ensure bit-level integrity of encrypted
-            documents. Follows RFC3552 guidelines.</p>
+        <p><strong>Anti-replay nonces</strong> and <code>versionId</code> prevent replay attacks. <strong>IPFS CID
+                integrity</strong> verification ensures document authenticity.</p>
+        <h3>7.4 Rate Limiting</h3>
+        <p>Implementers MUST enforce rate limiting: <strong>5 tokens/hour/user</strong> to mitigate DoS.</p>
     </section>
 
     <section id="privacy">
