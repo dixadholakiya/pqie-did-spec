@@ -363,14 +363,14 @@
         <ol>
             <li><strong>Attribute Lifting</strong>: Map attributes to polynomial $A(x) \in \mathbb{Z}_q[x]/(x^n + 1)$
                 with Gaussian noise $e$.</li>
-            <li><strong>NTT Domain Mapping</strong>: Apply Number-Theoretic Transform (NTT) for efficient convolution:
-                $A_{ntt} = NTT(A)$.</li>
-            <li><strong>Binding Transform</strong>: Bind to public key $pk_{ntt}$ via coefficient-wise multiplication:
-                $R_{ntt} = A_{ntt} \otimes pk_{ntt}$.</li>
-            <li><strong>Side-Channel Protection</strong>: Apply pointwise <code>tanh</code> activation: $c_i' =
-                \tanh(\kappa \cdot c_i)$.</li>
-            <li><strong>Dual-Hash Generation</strong>: Compute SHA3-512 and Blake2b-128 digests to form the DID string.
-            </li>
+            <li><strong>NTT Domain Mapping</strong>: Apply Number-Theoretic Transform (NTT) to convert coefficients for
+                efficient convolution: $A_{ntt} = NTT(A)$.</li>
+            <li><strong>Binding Transform</strong>: Bind attributes to public key $pk_{ntt}$ via coefficient-wise
+                multiplication: $R_{ntt} = A_{ntt} \otimes pk_{ntt}$.</li>
+            <li><strong>Side-Channel Protection</strong>: Apply pointwise <code>tanh</code> activation to disrupt linear
+                patterns: $c_i' = \tanh(\kappa \cdot c_i)$.</li>
+            <li><strong>Dual-Hash Generation</strong>: Compute primary (SHA3-512) and secondary (Blake2b) digests from
+                the processed result to form the DID string.</li>
         </ol>
     </section>
 
