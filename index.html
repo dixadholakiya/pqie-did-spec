@@ -361,14 +361,14 @@
         <pre><code>did:pqie:{primary-hash}:{secondary-hash}:{entropy-suffix}</code></pre>
         <h3>5.2 Generation Algorithm</h3>
         <ol>
-            <li><strong>Attribute Lifting</strong>: Map attributes to polynomial $A(x) \in \mathbb{Z}_q[x]/(x^n + 1)$
-                with Gaussian noise $e$.</li>
+            <li><strong>Attribute Lifting</strong>: Map attributes to polynomial A(x) in Z_q[x]/(x^n + 1) with Gaussian
+                noise e.</li>
             <li><strong>NTT Domain Mapping</strong>: Apply Number-Theoretic Transform (NTT) to convert coefficients for
-                efficient convolution: $A_{ntt} = NTT(A)$.</li>
-            <li><strong>Binding Transform</strong>: Bind attributes to public key $pk_{ntt}$ via coefficient-wise
-                multiplication: $R_{ntt} = A_{ntt} \otimes pk_{ntt}$.</li>
+                efficient convolution: A_ntt = NTT(A).</li>
+            <li><strong>Binding Transform</strong>: Bind attributes to public key pk_ntt via coefficient-wise
+                multiplication: R_ntt = A_ntt * pk_ntt.</li>
             <li><strong>Side-Channel Protection</strong>: Apply pointwise <code>tanh</code> activation to disrupt linear
-                patterns: $c_i' = \tanh(\kappa \cdot c_i)$.</li>
+                patterns: c_i' = tanh(k * c_i).</li>
             <li><strong>Dual-Hash Generation</strong>: Compute primary (SHA3-512) and secondary (Blake2b) digests from
                 the processed result to form the DID string.</li>
         </ol>
@@ -376,20 +376,20 @@
 
     <section id="crypto">
         <h2>6. Cryptographic Elements</h2>
-        <p>All <code>did:pqie</code> operations are run over ideal lattices in $R_q = \mathbb{Z}_q[x]/(x^n + 1)$ where
-            $n=512$ and $q=24593$.</p>
+        <p>All <code>did:pqie</code> operations are run over ideal lattices in R_q = Z_q[x]/(x^n + 1) where n=512 and
+            q=24593.</p>
 
         <h3>6.1 Key Pair Generation (Ring-LWE)</h3>
-        <p>Secret Key ($s$) is sampled from a discrete Gaussian ($\sigma \approx 4.0$). Public Key ($pk$) is compute as
-            $(a, c = a \cdot s + e \pmod{q})$.</p>
+        <p>Secret Key (s) is sampled from a discrete Gaussian (sigma &approx; 4.0). Public Key (pk) is computed as (a, c
+            = a * s + e mod q).</p>
 
         <h3>6.2 PQIE Digital Envelope</h3>
-        <p>Encrypted-by-default via hybrid KEM/AEAD. Shared Secret $SS = KEM(sk, kem)$. Ciphertext $CT = AES-GCM(SS,
-            Doc)$. Multiplications are accelerated via NTT ($O(n \log n)$).</p>
+        <p>Encrypted-by-default via hybrid KEM/AEAD. Shared Secret SS = KEM(sk, kem). Ciphertext CT = AES-GCM(SS, Doc).
+            Multiplications are accelerated via NTT (O(n log n)).</p>
 
         <h3>6.3 Lattice Signature</h3>
-        <p>Fiat-Shamir-with-abort: $z = y + c \cdot s$. Verification: $A \cdot z - c \cdot pk \approx t$. A unique
-            noise-reduction step ($O(\log q)$) keeps the response within spectral bounds.</p>
+        <p>Fiat-Shamir-with-abort: z = y + c * s. Verification: A * z - c * pk &approx; t. A unique noise-reduction step
+            (O(log q)) keeps the response within spectral bounds.</p>
     </section>
 
     <section id="crud">
